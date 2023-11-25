@@ -1,0 +1,30 @@
+- debug:
+    msg: "Running 'backend-node' tasks on {{ ansible_hostname }} as {{ ansible_user }}"
+
+- name: Run apt update
+  command: apt update
+
+- name: Install python3
+  apt:
+    name: python3
+    state: present
+
+- name: Install pip3
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install Flask (pip3)
+  pip:
+    name: flask
+
+- name: Copy backend to the node
+  copy:
+    src: /workspace/kiv-dce-lab-projects/semestral-task-1/demo-3/backend/
+    dest: /opt/backend/
+    owner: nodeadm
+    group: nodeadm
+    mode: "0644"
+
+- name: Start backend server
+  command: bash /opt/backend/run_server.sh

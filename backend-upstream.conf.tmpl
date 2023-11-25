@@ -1,0 +1,5 @@
+upstream backend-lb {
+%{ for ip in backend_nodes ~}
+    server ${ip}:5000 weight=1;
+%{ endfor ~}
+}

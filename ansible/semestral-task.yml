@@ -1,0 +1,13 @@
+# Based on https://github.com/istvano/ansible_role_microk8s
+---
+  - name: Frontend setup
+    hosts: frontend_node
+    become: true
+    roles:
+      - frontend
+  
+  - name: Backend nodes setup
+    hosts: backend_nodes
+    become: true
+    roles:
+      - backend

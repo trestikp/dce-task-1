@@ -1,0 +1,44 @@
+- debug:
+    msg: "Running 'frontend-node' tasks on {{ ansible_hostname }} as {{ ansible_user }}"
+
+- name: Run apt update
+  command: apt update
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Copy static HTML
+  copy:
+    src: /workspace/kiv-dce-lab-projects/semestral-task-1/demo-3/frontend/html/
+    dest: /var/www/html/
+    mode: "0644"
+
+- name: Copy server config to sites-available
+  copy:
+    src: /workspace/kiv-dce-lab-projects/semestral-task-1/demo-3/frontend/config/demo-server
+    dest: /etc/nginx/sites-available/demo-server
+    mode: "0644"
+
+- name: Copy upstream conf to conf.d
+  copy:
+    src: /workspace/kiv-dce-lab-projects/semestral-task-1/demo-3/frontend/config/backend-upstream.conf
+    dest: /etc/nginx/conf.d/backend-upstream.conf
+    mode: "0644"
+
+- name: Disable default server
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Enable demo configuration
+  file:
+    src: /etc/nginx/sites-available/demo-server
+    dest: /etc/nginx/sites-enabled/demo-server
+    state: link
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted

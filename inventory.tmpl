@@ -1,0 +1,12 @@
+[frontend_node]
+%{ for ip in frontend_nodes ~}
+${ip}
+%{ endfor ~}
+
+[backend_nodes]
+%{ for ip in backend_nodes ~}
+${ip}
+%{ endfor ~}
+
+[all:vars]
+ansible_user=${vm_admin_user}

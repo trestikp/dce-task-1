@@ -1,0 +1,21 @@
+# Default server configuration with additional location for this demo
+# Additional location: service-api, which load-balances between backend nodes
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/html;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        # this is the location for load balancing - backend-lb upstreams are configured in /etc/nginx/conf.d
+        location /service-api {
+            proxy_pass http://backend-lb/; # references the upstream load-balancing group
+        }
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
