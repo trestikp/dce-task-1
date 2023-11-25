@@ -1,6 +1,6 @@
-one_username      = "trestikp"
-one_password      = "519baa3e6cd998fca436fa7f08e2c11021768acf17d47b506ba3a10d76c84e3b"
-one_endpoint      = "https://nuada.zcu.cz/RPC2"
+one_username      = "YOUR_USERNAME"
+one_password      = "YOUR_PASSWORD_OR_TOKEN"
+one_endpoint      = "YOUR_PROVIDER"
 
 vm_image_name = "KIV-DCE Ubuntu 22.04"
 vm_image_url = "https://marketplace.opennebula.io//appliance/4562be1a-4c11-4e9e-b60a-85a045f1de05/download/0"
