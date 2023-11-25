@@ -20,7 +20,7 @@
 
 - name: Copy backend to the node
   copy:
-    src: /workspace/kiv-dce-lab-projects/semestral-task-1/demo-3/backend/
+    src: /workspace/kiv-dce-lab-projects/dce-task-1/demo-3/backend/
     dest: /opt/backend/
     owner: nodeadm
     group: nodeadm
