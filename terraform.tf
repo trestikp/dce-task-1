@@ -166,12 +166,47 @@ output "backend-nodes" {
   value = "${opennebula_virtual_machine.backend-node.*.ip}"
 }
 
-resource "time_sleep" "restart_trigger" {
-  create_duration = "5m"
+resource "null_resource" "wait_for_all_nodes_ssh" {
+  # Your configuration details for the null_resource
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      #!/bin/bash
+
+      ips_arr=($ALL_IPS)
+
+      # Function to check if SSH connection is available
+      check_ssh_connection() {
+          all_work=0
+
+          for ip in $${ips_arr[@]}; do
+              echo "Testing $ip"
+
+              if ! ssh -o "StrictHostKeyChecking no" -o ConnectTimeout=5 -o BatchMode=yes "nodeadm@$ip" "echo 2>&1"; then
+                  all_work=1
+                  echo "$ip is not responding"
+                  break
+              fi
+          done
+
+          return $all_work
+      }
+
+      until check_ssh_connection; do
+          sleep 5
+      done
+    EOT
+
+    interpreter = [ "bash", "-c" ]
+    environment = {
+      SSH_USER = var.vm_admin_user
+      ALL_IPS = "${join(" ", concat(opennebula_virtual_machine.frontend-node.*.ip, opennebula_virtual_machine.backend-node.*.ip))}"
+    }
+  }
 }
 
 resource "local_file" "hosts_cfg" {
-  depends_on = [ time_sleep.restart_trigger ]
+  depends_on = [ null_resource.wait_for_all_nodes_ssh ]
 
   content = templatefile("inventory.tmpl",
     {
@@ -192,14 +227,7 @@ resource "local_file" "nginx_upstream_cfg" {
   filename = "./demo-3/frontend/config/backend-upstream.conf"
 }
 
-# resource "time_sleep" "wait_60_seconds" {
-#   depends_on = [ local_file.nginx_upstream_cfg ]
-#   create_duration = "60s"
-# }
-
 resource "null_resource" "run_ansible" {
-  # wait 30 seconds, because the VMs aren't necessarily up yet
-  # depends_on = [ time_sleep.wait_60_seconds ]
   depends_on = [ local_file.nginx_upstream_cfg ]
 
   # the timeout is required by ansible (or disabling key checking) and not by terraform - first ssh connection takes a long time

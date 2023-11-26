@@ -9,7 +9,7 @@
 * vytvořené nody používají existující OS image - KIV-DCE Ubuntu 22.04 (ID: 422)
 
 #### spuštění
-1. použití vlastních přístupových údajů v souboru **terraform.tfvars**
+1. vyplnění vlastních přístupových údajů v souboru **terraform.tfvars**
 1. ```terraform init```
 1. (RECOMMENDED, OPTIONAL) ```terraform plan```
 1. ```terraform apply -auto-approve```
