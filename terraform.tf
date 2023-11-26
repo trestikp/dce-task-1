@@ -166,7 +166,13 @@ output "backend-nodes" {
   value = "${opennebula_virtual_machine.backend-node.*.ip}"
 }
 
+resource "time_sleep" "restart_trigger" {
+  create_duration = "5m"
+}
+
 resource "local_file" "hosts_cfg" {
+  depends_on = [ time_sleep.restart_trigger ]
+
   content = templatefile("inventory.tmpl",
     {
       vm_admin_user = var.vm_admin_user,
@@ -179,7 +185,7 @@ resource "local_file" "hosts_cfg" {
 resource "local_file" "nginx_upstream_cfg" {
   depends_on = [ local_file.hosts_cfg ]
 
-  content = templatefile("backend-upstream.conf.tmpl",
+  content = templatefile("./demo-3/frontend/config/backend-upstream.conf.tmpl",
     {
       backend_nodes = opennebula_virtual_machine.backend-node.*.ip
     })
