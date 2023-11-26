@@ -1,6 +1,4 @@
-one_username      = ""
-one_password      = ""
-one_endpoint      = ""
+
 
 vm_image_name = "KIV-DCE Ubuntu 22.04"
 vm_image_url = "https://marketplace.opennebula.io//appliance/4562be1a-4c11-4e9e-b60a-85a045f1de05/download/0"
