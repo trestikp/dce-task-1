@@ -37,3 +37,29 @@
     * příkladová aplikace využívala Docker, ovšem tato práce Docker nepouživá, kvůli rychlejšímu nasazení (Docker image není builděn na instancích, build na hostu narazí na Docker-in-Docker problém)
 * pokus o maximální automatizaci procesu - je potřeba manuálně vyplnit přihlašovací údaje v **tfvars**, poté je spouštění možné dvěma příkazy
 * práce je založena na MicroK8s cvičení
+
+## Konečný testovací scénář
+
+```
+host: podman run -it --rm --entrypoint=/bin/bash iac-development-container:latest
+
+container history:
+    1  ls
+    2  git clone https://github.com/trestikp/dce-task-1.git
+    3  ls
+    4  cd dce-task-1/
+    5  ls
+    6  vim terraform.tfvars 
+    7  apt install vim
+    8  apt update
+    9  apt install vim
+   10  vim terraform.tfvars 
+   11  cat /var/iac-dev-container-data/id_ecdsa.pub 
+   12  vim terraform.tfvars 
+   13  terraform init
+   14  terraform apply -auto-approve
+   15  history
+```
+
+Po dokončení ```terraform apply``` jsou do konzole vypsány IP adresy nodů. Zkopírování frontend-node
+adresy a její vložení do prohlížeče zobrazí defaultní statické HTML. Po zadání URL {ip}/service-api/find/echo se zobrazi dynamicky generovaný obsah, který má na spodku stránky informaci o tom, který backend obsah poskytl. Zobrazené jméno je DNS jméno serveru, tedy např. **Served by: sulis94.zcu.cz** (poskytnuto backendem s IP: 147.228.173.94).
