@@ -18,7 +18,7 @@
 * manuální spuštění ansible (instalace aplikace na vytvořené nody). Spuštění je součástí terraformu a nemělo by být nutné tento krok provádět manuálně.
     * ```ansible-playbook -T 30 -i dynamic_inventories/semestral_task ansible/semestral-task.yml```
 
-## Poznámky k modifikácím demo-3 aplikace
+## [Poznámky k modifikácím demo-3 aplikace](#demo_modifications)
 * v backendu přibyl "run_server.sh", pro spouštění app serveru pomocí pythonu
     * POZOR! pouze pro naše/ vývojové účely. Spuštění do produkce se běžné dělá pomocí WSGI serverů (např. gunicorn)
     * server je pouštěn na přímo ve VM (nodu) a né pomocí dockeru
@@ -28,3 +28,12 @@
     * config/demo-server - nový soubor. Nastavení nginx serveru jako reverse-proxy (load balancer) pro Ubuntu
     * backend-upstream.conf - soubor neexistuje, protože je generovaný z šablony, podle toho, jaké adresy jsou přiřazeny backend nodům
     * backend-upstream.conf.tmpl - šablona, podle které se vygeneruje soubor **backend-upstream.conf**
+
+## Pozmáky k práci
+* dynamický počet backendů -> mělo by stačit zvýšit počet nodů v **tfvars**
+* upravená demo aplikace viz sekce [demo-3 modifikace](#demo_modifications)
+* pokus o optimalizaci rychlosti deploymentu
+    * např. aktualizace OS volaná v init-scriptech mohla deploy prodloužit i na více jak 1 hodinu
+    * příkladová aplikace využívala Docker, ovšem tato práce Docker nepouživá, kvůli rychlejšímu nasazení (Docker image není builděn na instancích, build na hostu narazí na Docker-in-Docker problém)
+* pokus o maximální automatizaci procesu - je potřeba manuálně vyplnit přihlašovací údaje v **tfvars**, poté je spouštění možné dvěma příkazy
+* práce je založena na MicroK8s cvičení

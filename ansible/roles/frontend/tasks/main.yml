@@ -11,21 +11,18 @@
 
 - name: Copy static HTML
   copy:
-    # src: /workspace/kiv-dce-lab-projects/dce-task-1/demo-3/frontend/html/
     src: frontend/html/
     dest: /var/www/html/
     mode: "0644"
 
 - name: Copy server config to sites-available
   copy:
-    # src: /workspace/kiv-dce-lab-projects/dce-task-1/demo-3/frontend/config/demo-server
     src: frontend/config/demo-server
     dest: /etc/nginx/sites-available/demo-server
     mode: "0644"
 
 - name: Copy upstream conf to conf.d
   copy:
-    # src: /workspace/kiv-dce-lab-projects/dce-task-1/demo-3/frontend/config/backend-upstream.conf
     src: frontend/config/backend-upstream.conf
     dest: /etc/nginx/conf.d/backend-upstream.conf
     mode: "0644"

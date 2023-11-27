@@ -167,7 +167,11 @@ output "backend-nodes" {
 }
 
 resource "null_resource" "wait_for_all_nodes_ssh" {
-  # Your configuration details for the null_resource
+  # This is used because init-scripts schedule a restart after 1 minute. The instances are unavailable for this time +
+  # the boot time. This can cause other following resources to crash, so this script tests SSH connection to ALL
+  # instances until all SSH for admin accounts are working
+  # 
+  # The timeout in the init scripts could probably be changed to immediate restart saving us 1 minute
 
   provisioner "local-exec" {
     command = <<-EOT
@@ -230,7 +234,7 @@ resource "local_file" "nginx_upstream_cfg" {
 resource "null_resource" "run_ansible" {
   depends_on = [ local_file.nginx_upstream_cfg ]
 
-  # the timeout is required by ansible (or disabling key checking) and not by terraform - first ssh connection takes a long time
+  # the timeout is a failsafe for ansible - first ssh connection can take a long time
   provisioner "local-exec" {
     command = "ansible-playbook -T 30 -i dynamic_inventories/semestral_task ansible/semestral-task.yml"
     # environment = {
